@@ -4,13 +4,14 @@ package com.luv2code.hibernate.demo;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import com.luv2code.hibernate.demo.entity.Course;
 import com.luv2code.hibernate.demo.entity.Instructor;
 import com.luv2code.hibernate.demo.entity.InstructorDetail;
 
 
-public class EagerLazyDemo {
+public class FetchJoinDemo {
 
 	public static void main(String[] args) {
 
@@ -32,28 +33,40 @@ public class EagerLazyDemo {
 			//start a transaction
 			session.beginTransaction();
 			
+			
+			// option 2: Hibernate query with HQL
+			
+			
+			
 			// get the instructor from db
 			
 			int theId = 1;
-			Instructor tempInstructor = session.get(Instructor.class, theId);
+
+			Query<Instructor> query = 
+					session.createQuery("select i from Instructor i "
+							+ "JOIN FETCH i.courses "
+							+ "where i.id=:theInstructorId", 
+							Instructor.class);
+			
+			// set a parameter on query
+			query.setParameter("theInstructorId", theId);
+			
+			// execute query and get instructor
+			Instructor tempInstructor = query.getSingleResult();
 			
 			System.out.println("luv2code: Instructor: " + tempInstructor);
 
-			System.out.println("luv2code: Courses: " + tempInstructor.getCourses());
+
 			
 			//commit transaction
 			session.getTransaction().commit();
 			
 			
-			//close the session to break program
+			//close the session 
 			session.close();
 			
 			System.out.println("\nluv2code: session is now closed!\n");
-			// option 1: call getter method while session is open
-			/* error is resolved by loading data into memory while session 
-			 is open and recalled after session has been closed */			
-			
-			
+		
 			
 			// get course from the instructor
 			System.out.println("luv2code: Courses: " + tempInstructor.getCourses());
