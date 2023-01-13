@@ -39,7 +39,7 @@ public class EagerLazyDemo {
 			
 			System.out.println("luv2code: Instructor: " + tempInstructor);
 
-
+			System.out.println("luv2code: Courses: " + tempInstructor.getCourses());
 			
 			//commit transaction
 			session.getTransaction().commit();
@@ -47,6 +47,12 @@ public class EagerLazyDemo {
 			
 			//close the session to break program
 			session.close();
+			
+			System.out.println("\nluv2code: session is now closed!\n");
+			// option 1: call getter method while session is open
+			/* error is resolved by loading data into memory while session is open and recalled after session has been closed */			
+			
+			
 			
 			// get course from the instructor
 			System.out.println("luv2code: Courses: " + tempInstructor.getCourses());
